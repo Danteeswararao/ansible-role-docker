@@ -24,6 +24,11 @@
     state: present
   when: ansible_os_family == "Debian"
 
+- name: Update apt cache
+  apt:
+    update_cache: yes
+  when: ansible_os_family == "Debian"  
+
 - name: Install Docker
   package:
     name: "{{ docker_package }}"
