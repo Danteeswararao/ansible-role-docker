@@ -1,0 +1,11 @@
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+{% for job in prometheus_scrape_configs %}
+  - job_name: '{{ job.job_name }}'
+    static_configs:
+    {% for cfg in job.static_configs %}
+      - targets: {{ cfg.targets | to_json }}
+    {% endfor %}
+{% endfor %}
