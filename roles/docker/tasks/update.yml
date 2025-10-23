@@ -1,0 +1,30 @@
+---
+- name: Update apt cache (Debian)
+  apt:
+    update_cache: yes
+  when: ansible_os_family == "Debian"
+  tags: ['update_docker']
+
+- name: Upgrade Docker package to latest
+  package:
+    name: "{{ docker_package }}"
+    state: latest
+  notify: Restart Docker
+  tags: ['update_docker']
+
+- name: Ensure Docker service is enabled and restarted after update
+  service:
+    name: "{{ docker_service }}"
+    state: restarted
+  tags: ['update_docker']
+
+# Example: update docker daemon.json from template (customize path/template)
+- name: Deploy Docker daemon config
+  template:
+    src: daemon.json.j2
+    dest: /etc/docker/daemon.json
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart Docker
+  tags: ['update_docker']
